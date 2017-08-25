@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <com.caijiatest.tencentlivedemo.widget.IjkPlayerView
+        android:id="@+id/ijk_player_view"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"/>
+
+        <master.flame.danmaku.ui.widget.DanmakuView
+            android:id="@+id/danmaku_view"
+            android:layout_width="match_parent"
+            android:layout_height="180dp" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="playVideo"
+        android:text="Play" />
+
+    <Button
+        android:id="@+id/btn_text_dm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendTextDm"
+        android:text="发送文字弹幕" />
+
+    <Button
+        android:id="@+id/btn_text_img_dm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendTextImgDm"
+        android:text="发送图文弹幕" />
+
+</LinearLayout>
