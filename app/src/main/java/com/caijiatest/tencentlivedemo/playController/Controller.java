@@ -35,4 +35,9 @@ public interface Controller {
      * 开始调用播放,此时需要进度条等待,还没有收到开始播放的事件。后续的开始和暂停等事件通过播放器的回调处理
      */
     void startPlay();
+
+    /**
+     * 控制器的一些UI回到原始状态
+     */
+    void release();
 }

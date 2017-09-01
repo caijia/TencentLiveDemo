@@ -15,7 +15,11 @@ import com.asha.vrlib.MDVRLibrary;
 import com.caijiatest.tencentlivedemo.playController.util.ControllerUtil;
 import com.caijiatest.tencentlivedemo.player.IjkPlayerWrapper;
 import com.caijiatest.tencentlivedemo.player.PlayerWrapper;
+import com.caijiatest.tencentlivedemo.widget.TXPlayerView;
 import com.google.android.apps.muzei.render.GLTextureView;
+import com.tencent.rtmp.TXLivePlayConfig;
+import com.tencent.rtmp.TXLivePlayer;
+import com.tencent.rtmp.ui.TXCloudVideoView;
 
 /**
  * Created by cai.jia on 2017/8/23.
@@ -28,6 +32,10 @@ public class VRPlayerActivity extends AppCompatActivity{
     private PlayerWrapper livePlayer;
     private static final String VR_URL = "http://oss-cdn.gzcnad.com/room/VR/fccedfadee31d9a5881dd92f2fa7f5c6.mp4";
     private FrameLayout container;
+    private TXPlayerView txPlayerView;
+
+    private TXCloudVideoView txVideoView;
+    private TXLivePlayer txPlayer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +43,11 @@ public class VRPlayerActivity extends AppCompatActivity{
         setContentView(R.layout.activity_vr_player);
         container = (FrameLayout) findViewById(R.id.fl_controller);
         glTextureView = (GLTextureView) findViewById(R.id.gl_textureview);
+        txPlayerView = (TXPlayerView) findViewById(R.id.ijk_player_view);
         livePlayer = new IjkPlayerWrapper();
+        txPlayer = new TXLivePlayer(this);
+        TXLivePlayConfig config = new TXLivePlayConfig();
+//        txPlayer.setPlayerView(txVideoView);
 
         // init VR Library
         container.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -48,11 +60,22 @@ public class VRPlayerActivity extends AppCompatActivity{
                 }
             }
         });
+
+
         initVRLibrary();
+//        ControllerUtil.toggleActionBarAndStatusBar(this,true);
+
+        String flvUrl = "http://baobab.wdjcdn.com/14564977406580.mp4";
+//        txPlayerView.attachPlayController(new FullScreenController(this));
+//        txPlayerView.startPlay(flvUrl, TXLivePlayer.PLAY_TYPE_VOD_MP4);
+//        livePlayer.startPlay(VR_URL);
+
+
     }
 
     public void playVRVideo(View view) {
         livePlayer.startPlay(VR_URL);
+//        txPlayer.startPlay(VR_URL, TXLivePlayer.PLAY_TYPE_VOD_MP4);
     }
 
     /**
@@ -114,6 +137,7 @@ public class VRPlayerActivity extends AppCompatActivity{
                     public void onSurfaceReady(Surface surface) {
                         // IjkMediaPlayer or MediaPlayer
                         livePlayer.setSurface(surface);
+//                        txPlayer.setSurface(surface);
                     }
                 })
                 .build(glTextureView);
@@ -124,6 +148,8 @@ public class VRPlayerActivity extends AppCompatActivity{
         super.onResume();
         mVRLibrary.onResume(this);
         livePlayer.resume();
+        txPlayerView.resume();
+        txPlayer.resume();
     }
 
     @Override
@@ -131,6 +157,8 @@ public class VRPlayerActivity extends AppCompatActivity{
         super.onPause();
         mVRLibrary.onPause(this);
         livePlayer.pause();
+        txPlayerView.pause();
+        txPlayer.pause();
     }
 
     @Override
@@ -138,6 +166,8 @@ public class VRPlayerActivity extends AppCompatActivity{
         super.onDestroy();
         mVRLibrary.onDestroy();
         livePlayer.destroy();
+        txPlayerView.destroy();
+        txPlayer.stopPlay(true);
     }
 
     @Override

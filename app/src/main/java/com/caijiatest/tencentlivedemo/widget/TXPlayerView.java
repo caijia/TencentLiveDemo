@@ -92,7 +92,29 @@ public class TXPlayerView extends FrameLayout {
         }
     }
 
-    public void release(){
+    public void resume() {
+        if (livePlayer != null) {
+            livePlayer.resume();
+        }
+    }
+
+    public void pause() {
+        if (livePlayer != null) {
+            livePlayer.pause();
+        }
+    }
+
+    public void destroy() {
+        if (livePlayer != null) {
+            release();
+        }
+
+        if (controller != null) {
+            controller.release();
+        }
+    }
+
+    private void release(){
         if (livePlayer != null) {
             livePlayer.enableHardwareDecode(true); //关闭硬解码
             livePlayer.stopRecord();

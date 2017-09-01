@@ -34,13 +34,20 @@
         </activity>
 
         <activity android:name=".VRPlayerActivity"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize">
+
+        </activity>
+
+        <activity android:name=".TestLiveActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

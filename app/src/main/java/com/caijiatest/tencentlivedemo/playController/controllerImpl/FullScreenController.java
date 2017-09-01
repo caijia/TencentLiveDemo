@@ -40,6 +40,7 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
             hideController();
         }
     };
+    private boolean isPrepared;
 
     public FullScreenController(Context context) {
         this(context, null);
@@ -106,7 +107,18 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
         }
     }
 
+    @Override
+    public void release() {
+        controllerLoading.hide();
+        controllerSwitcher.hide();
+        controllerBottomBar.hide();
+        controllerBottomBar.reset();
+    }
+
     public void onLeftVerticalMove(@MoveState int state, float distance, float deltaY) {
+        if (!isPrepared) {
+            return;
+        }
         int dp = ControllerUtil.spToDp(getContext(), distance);
         int brightness = dp * 2;
         switch (state) {
@@ -125,8 +137,11 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
     }
 
     public void onRightVerticalMove(@MoveState int state, float distance, float deltaY) {
+        if (!isPrepared) {
+            return;
+        }
         int dp = ControllerUtil.spToDp(getContext(), distance);
-        int volume = (int) (dp * 0.1f);
+        int volume = dp * 2;
         switch (state) {
             case GestureRelativeLayout.START:
                 controllerSwitcher.startSetVolume();
@@ -143,6 +158,9 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
     }
 
     public void onHorizontalMove(@MoveState int state, float distance, float deltaX) {
+        if (!isPrepared) {
+            return;
+        }
         int dp = ControllerUtil.spToDp(getContext(), distance);
         int time = Math.round(dp * 0.5f);
         switch (state) {
@@ -187,6 +205,11 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
                 int duration = param.getInt(TXLiveConstants.EVT_PLAY_DURATION); //时间（秒数）
                 controllerBottomBar.setMax(duration);
                 controllerBottomBar.setProgress(progress);
+                break;
+            }
+
+            case TXLiveConstants.PLAY_EVT_RCV_FIRST_I_FRAME: {
+                isPrepared = true;
                 break;
             }
 
@@ -236,6 +259,9 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
 
     @Override
     public void onClick(View v) {
+        if (!isPrepared) {
+            return;
+        }
         if (isShowController) {
             hideController();
         } else {
