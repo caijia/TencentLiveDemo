@@ -34,11 +34,15 @@ public interface PlayerWrapper{
 
     void startPlay(String uri);
 
+    void reload(String url);
+
+    void setPlayerMute(int mute);
+
     void setVideoDisplayMode(int displayMode);
 
     void setTextureView(TextureView textureView);
 
-    void setOnPlayEventListener(OnPlayEventListener playEventListener);
+    void addOnPlayEventListener(OnPlayEventListener playEventListener);
 
     interface OnPlayEventListener{
 

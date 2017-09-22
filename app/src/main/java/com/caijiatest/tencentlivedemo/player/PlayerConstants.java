@@ -4,7 +4,7 @@ package com.caijiatest.tencentlivedemo.player;
  * Created by cai.jia on 2017/8/23.
  */
 
-public interface IjkPlayerConstants {
+public interface PlayerConstants {
 
     int PLAY_EVENT_PREPARED = 1000;
     int PLAY_EVENT_BEGIN = 1001;
@@ -16,6 +16,9 @@ public interface IjkPlayerConstants {
     int PLAY_EVENT_VIDEO_ROTATION = 1007;
     int PLAY_EVENT_INVOKE_PLAY = 1008;
     int PLAY_EVENT_PAUSE = 1009;
+    int PLAY_EVENT_RELOAD_SUCCESS = 1010;
+    int PLAY_EVENT_DECODE = 1011;
+    int PLAY_EVENT_BUFFERING_END = 1012;
 
     int DISPLAY_WRAP_CONTENT = 4001;
     int DISPLAY_CENTER_CROP = 4002;
@@ -28,5 +31,7 @@ public interface IjkPlayerConstants {
     String PARAMS_VIDEO_ROTATION = "params:videoRotation";
     String PARAMS_VIDEO_WIDTH = "params:videoWidth";
     String PARAMS_VIDEO_HEIGHT = "params:videoHeight";
+    String PARAMS_MEDIA_DECODE = "params:mediaDecode";
+    String PARAMS_CACHE_PERCENT = "params:cachePercent";
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.RelativeLayout;
@@ -18,32 +19,34 @@ import java.lang.annotation.RetentionPolicy;
 
 public class GestureRelativeLayout extends RelativeLayout {
 
+    public static final int START = 1;
+    public static final int MOVE = 2;
+    public static final int END = 3;
     private static final int NONE = 0;
     private static final int HORIZONTAL = 1;
     private static final int VERTICAL_LEFT = 2;
     private static final int VERTICAL_RIGHT = 3;
-
     private float initialX;
     private float initialY;
     private float startX;
     private float startY;
     private int orientation = NONE;
-
     private int touchSlop;
+    private GestureDetector gestureDetector;
+    private OnGestureListener gestureListener;
 
     public GestureRelativeLayout(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public GestureRelativeLayout(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet,0);
+        this(context, attributeSet, 0);
     }
 
     public GestureRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public GestureRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -53,6 +56,24 @@ public class GestureRelativeLayout extends RelativeLayout {
     private void init(Context context) {
         ViewConfiguration config = ViewConfiguration.get(context);
         touchSlop = config.getScaledTouchSlop();
+        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (gestureListener != null) {
+                    gestureListener.onSingleClick();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                //双击事件
+                if (gestureListener != null) {
+                    gestureListener.onDoubleClick();
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -82,7 +103,7 @@ public class GestureRelativeLayout extends RelativeLayout {
                     orientation = HORIZONTAL;
                     initialX = distanceX > 0 ? initialX + touchSlop : initialX - touchSlop;
                     distanceX = x - initialX;
-                    dispatchHorizontalMove(START,distanceX,0);
+                    dispatchHorizontalMove(START, distanceX, 0);
                     isFirst = true;
                 }
 
@@ -95,9 +116,9 @@ public class GestureRelativeLayout extends RelativeLayout {
                     distanceY = y - initialY;
 
                     if (left) {
-                        dispatchLeftVerticalMove(START,-distanceY,0);
-                    }else{
-                        dispatchRightVerticalMove(START,-distanceY,0);
+                        dispatchLeftVerticalMove(START, -distanceY, 0);
+                    } else {
+                        dispatchRightVerticalMove(START, -distanceY, 0);
                     }
                     isFirst = true;
                 }
@@ -105,22 +126,22 @@ public class GestureRelativeLayout extends RelativeLayout {
                 startX = x;
                 startY = y;
                 if (isFirst) {
-                    return super.onTouchEvent(event);
+                    return true;
                 }
 
                 switch (orientation) {
                     case HORIZONTAL: {
-                        dispatchHorizontalMove(MOVE,distanceX,deltaX);
+                        dispatchHorizontalMove(MOVE, distanceX, deltaX);
                         break;
                     }
 
                     case VERTICAL_LEFT: {
-                        dispatchLeftVerticalMove(MOVE,-distanceY,-deltaY);
+                        dispatchLeftVerticalMove(MOVE, -distanceY, -deltaY);
                         break;
                     }
 
                     case VERTICAL_RIGHT: {
-                        dispatchRightVerticalMove(MOVE,-distanceY,-deltaY);
+                        dispatchRightVerticalMove(MOVE, -distanceY, -deltaY);
                         break;
                     }
                 }
@@ -135,17 +156,17 @@ public class GestureRelativeLayout extends RelativeLayout {
 
                 switch (orientation) {
                     case HORIZONTAL: {
-                        dispatchHorizontalMove(END,distanceX,deltaX);
+                        dispatchHorizontalMove(END, distanceX, deltaX);
                         break;
                     }
 
                     case VERTICAL_LEFT: {
-                        dispatchLeftVerticalMove(END,-distanceY,-deltaY);
+                        dispatchLeftVerticalMove(END, -distanceY, -deltaY);
                         break;
                     }
 
                     case VERTICAL_RIGHT: {
-                        dispatchRightVerticalMove(END,-distanceY,-deltaY);
+                        dispatchRightVerticalMove(END, -distanceY, -deltaY);
                         break;
                     }
                 }
@@ -165,49 +186,47 @@ public class GestureRelativeLayout extends RelativeLayout {
                 break;
             }
         }
-        return super.onTouchEvent(event);
+        gestureDetector.onTouchEvent(event);
+        return true;
     }
-
-    public static final int START = 1;
-    public static final int MOVE = 2;
-    public static final int END = 3;
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({START,MOVE,END})
-    public @interface MoveState{
-    }
-
-    private OnGestureListener gestureListener;
 
     public void setOnGestureListener(OnGestureListener gestureListener) {
         this.gestureListener = gestureListener;
     }
 
-    private void dispatchHorizontalMove(@MoveState int state,float distance,float dx) {
+    private void dispatchHorizontalMove(@MoveState int state, float distance, float dx) {
         if (gestureListener != null) {
             gestureListener.onHorizontalMove(state, distance, dx);
         }
     }
 
-    private void dispatchLeftVerticalMove(@MoveState int state,float distance,float dx) {
+    private void dispatchLeftVerticalMove(@MoveState int state, float distance, float dx) {
         if (gestureListener != null) {
             gestureListener.onLeftVerticalMove(state, distance, dx);
         }
     }
 
-    private void dispatchRightVerticalMove(@MoveState int state,float distance,float dx) {
+    private void dispatchRightVerticalMove(@MoveState int state, float distance, float dx) {
         if (gestureListener != null) {
             gestureListener.onRightVerticalMove(state, distance, dx);
         }
     }
 
-    public interface OnGestureListener{
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({START, MOVE, END})
+    public @interface MoveState {
+    }
 
-         void onLeftVerticalMove(@MoveState int state,float distance,float deltaY);
+    public interface OnGestureListener {
 
-         void onRightVerticalMove(@MoveState int state,float distance,float deltaY);
+        void onLeftVerticalMove(@MoveState int state, float distance, float deltaY);
 
-         void onHorizontalMove(@MoveState int state,float distance,float deltaX);
+        void onRightVerticalMove(@MoveState int state, float distance, float deltaY);
 
+        void onHorizontalMove(@MoveState int state, float distance, float deltaX);
+
+        void onSingleClick();
+
+        void onDoubleClick();
     }
 }

@@ -15,11 +15,11 @@ import com.caijiatest.tencentlivedemo.playController.widget.ControllerBottomBar;
 import com.caijiatest.tencentlivedemo.playController.widget.ControllerLoading;
 import com.caijiatest.tencentlivedemo.playController.widget.ControllerSwitcher;
 import com.caijiatest.tencentlivedemo.playController.widget.GestureRelativeLayout;
-import com.caijiatest.tencentlivedemo.player.IjkPlayerConstants;
 import com.caijiatest.tencentlivedemo.player.IjkPlayerWrapper;
+import com.caijiatest.tencentlivedemo.player.PlayerConstants;
 import com.caijiatest.tencentlivedemo.player.PlayerWrapper;
 
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_ERROR;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_ERROR;
 
 /**
  * Created by cai.jia on 2017/8/23.
@@ -83,7 +83,7 @@ public class IjkFullScreenController extends GestureRelativeLayout implements Ij
     @Override
     public void setPlayer(IjkPlayerWrapper player) {
         this.player = player;
-        player.setOnPlayEventListener(this);
+        player.addOnPlayEventListener(this);
     }
 
     @Override
@@ -184,36 +184,36 @@ public class IjkFullScreenController extends GestureRelativeLayout implements Ij
     @Override
     public void onPlayEvent(int event, Bundle param) {
         switch (event) {
-            case IjkPlayerConstants.PLAY_EVENT_INVOKE_PLAY:{
+            case PlayerConstants.PLAY_EVENT_INVOKE_PLAY:{
                 if (controllerLoading != null) {
                     controllerLoading.show();
                 }
                 break;
             }
 
-            case IjkPlayerConstants.PLAY_EVENT_BEGIN: {
+            case PlayerConstants.PLAY_EVENT_BEGIN: {
                 controllerLoading.hide();
                 controllerSwitcher.setPlayingState(true);
                 break;
             }
 
-            case IjkPlayerConstants.PLAY_EVENT_PAUSE:{
+            case PlayerConstants.PLAY_EVENT_PAUSE:{
                 controllerSwitcher.setPlayingState(false);
                 break;
             }
 
-            case IjkPlayerConstants.PLAY_EVENT_LOADING: {
+            case PlayerConstants.PLAY_EVENT_LOADING: {
                 controllerLoading.show();
-                int netSpeed = param.getInt(IjkPlayerConstants.PARAMS_NET_SPEED);
+                int netSpeed = param.getInt(PlayerConstants.PARAMS_NET_SPEED);
                 controllerLoading.setNetSpeed(netSpeed);
                 controllerSwitcher.setPlayingState(false);
                 break;
             }
 
-            case IjkPlayerConstants.PLAY_EVENT_PROGRESS: {
-                int duration = param.getInt(IjkPlayerConstants.PARAMS_PLAY_DURATION); //进度（秒数）
-                int progress = param.getInt(IjkPlayerConstants.PARAMS_PLAY_PROGRESS); //时间（秒数）
-                int secondProgress = param.getInt(IjkPlayerConstants.PARAMS_PLAY_SECOND_PROGRESS); //时间（秒数）
+            case PlayerConstants.PLAY_EVENT_PROGRESS: {
+                int duration = param.getInt(PlayerConstants.PARAMS_PLAY_DURATION); //进度（秒数）
+                int progress = param.getInt(PlayerConstants.PARAMS_PLAY_PROGRESS); //时间（秒数）
+                int secondProgress = param.getInt(PlayerConstants.PARAMS_PLAY_SECOND_PROGRESS); //时间（秒数）
                 controllerBottomBar.setMax(duration);
                 controllerBottomBar.setProgress(progress);
                 controllerBottomBar.setSecondaryProgress(secondProgress);
@@ -221,9 +221,9 @@ public class IjkFullScreenController extends GestureRelativeLayout implements Ij
             }
 
             case PLAY_EVENT_ERROR:
-            case IjkPlayerConstants.PLAY_EVENT_END: {
+            case PlayerConstants.PLAY_EVENT_END:{
+                controllerLoading.hide();
                 controllerSwitcher.setPlayingState(false);
-                stopPlayer();
                 break;
             }
         }
@@ -281,5 +281,15 @@ public class IjkFullScreenController extends GestureRelativeLayout implements Ij
         controllerBottomBar.hide();
         controllerSwitcher.hide();
         isShowController = false;
+    }
+
+    @Override
+    public void onDoubleClick() {
+
+    }
+
+    @Override
+    public void onSingleClick() {
+
     }
 }

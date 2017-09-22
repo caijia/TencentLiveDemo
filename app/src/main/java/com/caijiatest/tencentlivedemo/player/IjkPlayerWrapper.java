@@ -14,26 +14,26 @@ import com.tencent.ijk.media.player.IjkMediaPlayer;
 
 import java.lang.ref.WeakReference;
 
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.DISPLAY_CENTER_CROP;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.DISPLAY_WRAP_CONTENT;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_NET_SPEED;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_PLAY_DURATION;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_PLAY_ERROR;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_PLAY_PROGRESS;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_PLAY_SECOND_PROGRESS;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_VIDEO_HEIGHT;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_VIDEO_ROTATION;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PARAMS_VIDEO_WIDTH;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_BEGIN;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_END;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_ERROR;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_INVOKE_PLAY;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_LOADING;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_PAUSE;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_PREPARED;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_PROGRESS;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_VIDEO_ROTATION;
-import static com.caijiatest.tencentlivedemo.player.IjkPlayerConstants.PLAY_EVENT_VIDEO_SIZE_CHANGE;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.DISPLAY_CENTER_CROP;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.DISPLAY_WRAP_CONTENT;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_NET_SPEED;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_PLAY_DURATION;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_PLAY_ERROR;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_PLAY_PROGRESS;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_PLAY_SECOND_PROGRESS;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_VIDEO_HEIGHT;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_VIDEO_ROTATION;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PARAMS_VIDEO_WIDTH;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_BEGIN;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_END;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_ERROR;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_INVOKE_PLAY;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_LOADING;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_PAUSE;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_PREPARED;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_PROGRESS;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_VIDEO_ROTATION;
+import static com.caijiatest.tencentlivedemo.player.PlayerConstants.PLAY_EVENT_VIDEO_SIZE_CHANGE;
 
 /**
  * Created by cai.jia on 2017/8/23.
@@ -171,6 +171,11 @@ public class IjkPlayerWrapper implements PlayerWrapper, IMediaPlayer.OnPreparedL
     }
 
     @Override
+    public void setPlayerMute(int mute) {
+
+    }
+
+    @Override
     public boolean isPlaying() {
         return canPlay() && player.isPlaying();
     }
@@ -183,13 +188,18 @@ public class IjkPlayerWrapper implements PlayerWrapper, IMediaPlayer.OnPreparedL
     }
 
     @Override
+    public void reload(String url) {
+        //nothing
+    }
+
+    @Override
     public void setTextureView(TextureView textureView) {
         this.textureView = textureView;
         textureView.setSurfaceTextureListener(this);
     }
 
     @Override
-    public void setOnPlayEventListener(OnPlayEventListener playEventListener) {
+    public void addOnPlayEventListener(OnPlayEventListener playEventListener) {
         this.playEventListener = playEventListener;
     }
 

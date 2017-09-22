@@ -14,10 +14,13 @@ import android.view.Surface;
 import android.view.View;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.caijiatest.tencentlivedemo.playController.controllerImpl.IjkFullScreenController;
-import com.caijiatest.tencentlivedemo.widget.IjkPlayerView;
+import com.caijiatest.tencentlivedemo.playController.controllerImpl.KSYFullScreenController;
+import com.caijiatest.tencentlivedemo.playController.entities.VideoQuality;
+import com.caijiatest.tencentlivedemo.widget.KSYPlayerView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import master.flame.danmaku.controller.IDanmakuView;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
@@ -35,7 +38,7 @@ import master.flame.danmaku.danmaku.parser.BaseDanmakuParser;
 
 public class PlayVideoActivity extends AppCompatActivity {
 
-    IjkPlayerView ijkPlayerView;
+    KSYPlayerView ijkPlayerView;
     private MDVRLibrary mVRLibrary;
 //    private GLTextureView glTextureView;
 
@@ -43,14 +46,33 @@ public class PlayVideoActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_video);
-        ijkPlayerView = (IjkPlayerView) findViewById(R.id.ijk_player_view);
+        ijkPlayerView = (KSYPlayerView) findViewById(R.id.ijk_player_view);
 //        glTextureView = new GLTextureView(this);
 //        ijkPlayerView.setTextureView(new TextureView(this));
-        ijkPlayerView.attachPlayController(new IjkFullScreenController(this));
-
+        ijkPlayerView.attachPlayController(new KSYFullScreenController(this));
+        List<VideoQuality> qualityList = getVideoQualityData();
+        ijkPlayerView.setVideoQualityData(qualityList);
         // init VR Library
 //        initVRLibrary();
         initDanmu();
+    }
+
+    String[] videoQualityDesc = {"标清","高清","超清","蓝光"};
+    String[] videoQualityUrl = {
+            "http://play.g3proxy.lecloud.com/vod/v2/MjUxLzE2LzgvbGV0di11dHMvMTQvdmVyXzAwXzIyLTExMDc2NDEzODctYXZjLTE5OTgxOS1hYWMtNDgwMDAtNTI2MTEwLTE3MDg3NjEzLWY1OGY2YzM1NjkwZTA2ZGFmYjg2MTVlYzc5MjEyZjU4LTE0OTg1NTc2ODY4MjMubXA0?b=259&mmsid=65565355&tm=1499247143&key=f0eadb4f30c404d49ff8ebad673d3742&platid=3&splatid=345&playid=0&tss=no&vtype=21&cvid=2026135183914&payff=0&pip=08cc52f8b09acd3eff8bf31688ddeced&format=0&sign=mb&dname=mobile&expect=1&tag=mobile&xformat=super",
+            "http://play.g3proxy.lecloud.com/vod/v2/MjQ5LzM3LzIwL2xldHYtdXRzLzE0L3Zlcl8wMF8yMi0xMTA3NjQxMzkwLWF2Yy00MTk4MTAtYWFjLTQ4MDAwLTUyNjExMC0zMTU1NTY1Mi00ZmJjYzFkNzA1NWMyNDc4MDc5OTYxODg1N2RjNzEwMi0xNDk4NTU3OTYxNzQ4Lm1wNA==?b=479&mmsid=65565355&tm=1499247143&key=98c7e781f1145aba07cb0d6ec06f6c12&platid=3&splatid=345&playid=0&tss=no&vtype=13&cvid=2026135183914&payff=0&pip=08cc52f8b09acd3eff8bf31688ddeced&format=0&sign=mb&dname=mobile&expect=1&tag=mobile&xformat=super",
+            "http://play.g3proxy.lecloud.com/vod/v2/MjQ5LzM3LzIwL2xldHYtdXRzLzE0L3Zlcl8wMF8yMi0xMTA3NjQxMzkwLWF2Yy00MTk4MTAtYWFjLTQ4MDAwLTUyNjExMC0zMTU1NTY1Mi00ZmJjYzFkNzA1NWMyNDc4MDc5OTYxODg1N2RjNzEwMi0xNDk4NTU3OTYxNzQ4Lm1wNA==?b=479&mmsid=65565355&tm=1499247143&key=98c7e781f1145aba07cb0d6ec06f6c12&platid=3&splatid=345&playid=0&tss=no&vtype=13&cvid=2026135183914&payff=0&pip=08cc52f8b09acd3eff8bf31688ddeced&format=0&sign=mb&dname=mobile&expect=1&tag=mobile&xformat=super",
+    "http://play.g3proxy.lecloud.com/vod/v2/MjQ5LzM3LzIwL2xldHYtdXRzLzE0L3Zlcl8wMF8yMi0xMTA3NjQxMzkwLWF2Yy00MTk4MTAtYWFjLTQ4MDAwLTUyNjExMC0zMTU1NTY1Mi00ZmJjYzFkNzA1NWMyNDc4MDc5OTYxODg1N2RjNzEwMi0xNDk4NTU3OTYxNzQ4Lm1wNA==?b=479&mmsid=65565355&tm=1499247143&key=98c7e781f1145aba07cb0d6ec06f6c12&platid=3&splatid=345&playid=0&tss=no&vtype=13&cvid=2026135183914&payff=0&pip=08cc52f8b09acd3eff8bf31688ddeced&format=0&sign=mb&dname=mobile&expect=1&tag=mobile&xformat=super"};
+
+    private List<VideoQuality> getVideoQualityData() {
+        List<VideoQuality> list = new ArrayList<>();
+        for (int i = 0; i < videoQualityDesc.length; i++) {
+            VideoQuality videoQuality = new VideoQuality();
+            videoQuality.setDesc(videoQualityDesc[i]);
+            videoQuality.setUrl(videoQualityUrl[i]);
+            list.add(videoQuality);
+        }
+        return list;
     }
 
     private void initVRLibrary(){
@@ -182,8 +204,8 @@ public class PlayVideoActivity extends AppCompatActivity {
 
     public void playVideo(View view) {
 //        String flvUrl = "http://baobab.wdjcdn.com/14564977406580.mp4";
-        String vrUrl = "http://oss-cdn.gzcnad.com/room/VR/fccedfadee31d9a5881dd92f2fa7f5c6.mp4";
-        ijkPlayerView.startPlay(vrUrl);
+        String vrUrl = "http://baobab.wdjcdn.com/14564977406580.mp4";
+        ijkPlayerView.startPlay(videoQualityUrl[0]);
     }
 
     @Override
@@ -218,5 +240,6 @@ public class PlayVideoActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 //        mVRLibrary.onOrientationChanged(this);
+        ijkPlayerView.onConfigurationChanged(this);
     }
 }

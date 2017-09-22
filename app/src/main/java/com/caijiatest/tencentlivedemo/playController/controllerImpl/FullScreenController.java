@@ -68,7 +68,7 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
         controllerBottomBar = (ControllerBottomBar) findViewById(R.id.controller_bottom_bar);
         controllerSwitcher.setOnPlayStateListener(this);
         controllerBottomBar.setOnStopTouchProgressChangeListener(this);
-        this.setOnClickListener(this);
+//        this.setOnClickListener(this);
     }
 
     private boolean isPlaying() {
@@ -267,6 +267,16 @@ public class FullScreenController extends GestureRelativeLayout implements Contr
         } else {
             showController();
         }
+    }
+
+    @Override
+    public void onDoubleClick() {
+
+    }
+
+    @Override
+    public void onSingleClick() {
+
     }
 
     public void showController() {

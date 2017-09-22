@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.caijiatest.tencentlivedemo.R;
+import com.caijiatest.tencentlivedemo.playController.entities.VideoQuality;
 import com.caijiatest.tencentlivedemo.playController.util.ControllerUtil;
+
+import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -24,8 +28,10 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by cai.jia on 2017/7/6 0006
  */
 
-public class ControllerBottomBar extends LinearLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class ControllerBottomBar extends LinearLayout implements View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener{
 
+    private static final String TIME_RESET = "00:00";
     private TextView voiceTv;
     private TextView currentTimeTv;
     private SeekBar progressSeekBar;
@@ -33,6 +39,7 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
     private TextView fullScreenTv;
     private ProgressBar progressBar;
     private LinearLayout controllerLl;
+    private TextView videoQualityTv;
     private ViewGroup videoControllerContainerParent;
     private ViewGroup videoControllerContainer;
     private int maxVolume;
@@ -66,8 +73,10 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
         fullScreenTv = (TextView) findViewById(R.id.video_full_screen_tv);
         progressBar = (ProgressBar) findViewById(R.id.video_play_progress_bar);
         controllerLl = (LinearLayout) findViewById(R.id.bottom_controller_bar);
+        videoQualityTv = (TextView) findViewById(R.id.tv_video_quality);
 
         voiceTv.setOnClickListener(this);
+        videoQualityTv.setOnClickListener(this);
         fullScreenTv.setOnClickListener(this);
         progressSeekBar.setOnSeekBarChangeListener(this);
         maxVolume = ControllerUtil.getMaxVolume(context);
@@ -87,12 +96,20 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
     }
 
     public void reset() {
-        currentTimeTv.setText("00:00");
-        totalTimeTv.setText("00:00");
+        currentTimeTv.setText(TIME_RESET);
+        totalTimeTv.setText(TIME_RESET);
         progressSeekBar.setProgress(0);
         progressSeekBar.setSecondaryProgress(0);
         progressBar.setProgress(0);
         progressBar.setSecondaryProgress(0);
+    }
+
+    private List<VideoQuality> videoQualityList;
+
+    public void setVideoQuality(List<VideoQuality> videoQualityList) {
+        this.videoQualityList = videoQualityList;
+        boolean hasVideoQualityData = videoQualityList != null && !videoQualityList.isEmpty();
+        videoQualityTv.setVisibility(hasVideoQualityData ? VISIBLE : GONE);
     }
 
     @Override
@@ -106,8 +123,18 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
 
         } else if (v == fullScreenTv) {
             toggleFullScreen();
+
+        } else if (v == videoQualityTv) {
+            //清晰度
+            if (popVideoQuality == null) {
+                popVideoQuality = new PopVideoQuality(getContext(), videoQualityList);
+            }
+            popVideoQuality.setOnVideoQualityItemClickListener(listener);
+            popVideoQuality.showAtLocation(v, GravityCompat.END, 0, 0);
         }
     }
+
+    private PopVideoQuality popVideoQuality;
 
     public void setFullScreenLayout(ViewGroup videoContainerParent, ViewGroup videoContainer) {
         this.videoControllerContainer = videoContainer;
@@ -123,6 +150,10 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
     }
 
     public void toggleFullScreen() {
+        toggleFullScreen(false);
+    }
+
+    public void toggleFullScreen(boolean autoRotation) {
         if (videoControllerContainerParent == null || videoControllerContainer == null) {
             return;
         }
@@ -139,13 +170,17 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
             videoControllerContainerParent.removeView(videoControllerContainer);
             content.addView(videoControllerContainer, MATCH_PARENT, MATCH_PARENT);
             ControllerUtil.toggleActionBarAndStatusBar(getContext(), true);
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            if (!autoRotation) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
 
         } else {
             content.removeView(videoControllerContainer);
             videoControllerContainerParent.addView(videoControllerContainer, MATCH_PARENT, MATCH_PARENT);
             ControllerUtil.toggleActionBarAndStatusBar(getContext(), false);
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            if (!autoRotation) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
         }
     }
 
@@ -197,6 +232,12 @@ public class ControllerBottomBar extends LinearLayout implements View.OnClickLis
         if (onStopTouchProgressChangeListener != null) {
             onStopTouchProgressChangeListener.onStopTouchProgressChange(seekBar.getProgress());
         }
+    }
+
+    private PopVideoQuality.OnVideoQualityItemClickListener listener;
+
+    public void setOnVideoQualityItemClickListener(PopVideoQuality.OnVideoQualityItemClickListener listener) {
+        this.listener = listener;
     }
 
     public interface OnStopTouchProgressChangeListener{

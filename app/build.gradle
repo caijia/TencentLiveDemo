@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    useLibrary 'org.apache.http.legacy'
     compileSdkVersion 25
     buildToolsVersion "26.0.1"
     defaultConfig {
@@ -29,13 +30,20 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     // 导入腾讯云直播SDK aar
     compile(name: 'LiteAVSDK_Professional_3.0.1201', ext: 'aar')
     compile 'com.github.ashqal:MD360Player4Android:2.4.1'
-
     //弹幕
     compile 'com.github.ctiao:DanmakuFlameMaster:0.8.3'
     compile 'com.github.ctiao:ndkbitmap-armv7a:0.8.3'
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+    //金山
+    compile 'com.ksyun.media:libksyplayer-java:2.0.4'
+    compile 'com.ksyun.media:libksyplayer-armv7a:2.0.4'
+    compile 'com.ksyun.media:libksyplayer-arm64:2.0.4'
+
 }

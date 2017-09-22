@@ -58,23 +58,33 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tv_video_quality"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:text="清晰度"
+                android:visibility="gone"
+                android:textColor="@android:color/white" />
+
+            <TextView
                 android:id="@+id/video_full_screen_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:drawableLeft="@drawable/btn_video_full_screen" />
 
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/video_play_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:maxHeight="2dp"
             android:minHeight="2dp"
-            style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/horizontal_progress_style" />
 
     </FrameLayout>
